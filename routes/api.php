@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AssetController;
+use App\Http\Controllers\Api\GoldPriceController;
 
 Route::get('/test', function () {
     return response()->json(['message' => 'API is working']);
@@ -11,6 +12,8 @@ Route::get('/test', function () {
 // Auth routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+//Gold price route  
+Route::get('/gold/live', [GoldPriceController::class, 'livePrices']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -24,4 +27,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/assets/{id}', [AssetController::class, 'show']);
     Route::put('/assets/{id}', [AssetController::class, 'update']);
     Route::delete('/assets/{id}', [AssetController::class, 'destroy']);
+    
 });
