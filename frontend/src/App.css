@@ -1,0 +1,107 @@
+/* ================================
+    Imports & Theme
+================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import "tailwindcss";
+
+
+@theme {
+    --color-primary: #273A54;
+    --color-secondary: #A3A5A3;
+    --color-accent: #F2BB39;
+    --color-section: #0D2341;
+    --color-profit: #35A60C;
+    --color-lose: #B50707;
+
+    --font-sans: Inter, sans-serif;
+
+    --radius-6xl : 160px;
+}
+
+/* ================================
+    Base Styles
+================================ */
+
+html {
+    scroll-behavior: smooth;
+}
+
+@layer base {
+    body {
+        @apply bg-primary  font-sans antialiased;
+    }
+
+    .app-container {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+}
+
+
+/* ================================
+    Components
+================================ */
+
+
+  /* ---------- Buttons ---------- */
+.btn-primary {
+    @apply bg-accent flex items-center  justify-center w-full md:w-70 hover:bg-accent/90 cursor-pointer text-primary px-6 py-6 rounded-3xl flex gap-2 font-medium text-center transition shadow-lg hover:shadow-accent/30;
+}
+.btn-primary-call {
+    @apply bg-section flex items-center  justify-center w-full md:w-70 hover:bg-section/90 cursor-pointer text-accent px-6 py-6 rounded-3xl flex gap-2 font-medium text-center transition shadow-lg hover:shadow-accent/30;
+}
+
+
+  /* ---------- Navigation ---------- */
+.nav-item {
+    @apply text-white hover:text-accent px-3 py-2 text-sm font-light transition;
+}
+.nav-btn {
+    @apply bg-accent text-primary px-6 py-2 rounded-3xl text-sm font-medium hover:bg-accent/90 hover:shadow-accent/30 outline-none shadow-lg transition;
+}
+
+.mobile-nav-item {
+    @apply block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:text-primary hover:bg-gray-50;
+}
+
+.mobile-nav-btn {
+    @apply block w-full text-center bg-accent text-primary px-4 py-2 rounded-3xl text-base font-medium hover:bg-accent/90 transition mt-2;
+}
+
+  /* ---------- Sections ---------- */
+  .section-header {
+      @apply text-white text-3xl md:text-4xl lg:text-5xl font-bold;
+    }
+    
+    
+    .section-description {
+        @apply  max-w-2xl  text-secondary;
+    }
+    
+/* ---------- features ---------- */
+.icons-container{
+    @apply flex gap-4 items-center h-auto
+}
+.icon{
+    @apply  text-accent text-xl
+}
+
+/* ---------- currency ---------- */
+.currency {
+    @apply cursor-pointer rounded-3xl text-secondary
+}
+.currencyChoosen {
+    @apply cursor-pointer rounded-3xl text-section bg-accent transition ;
+}
+
+/* ---------- Karat card ---------- */
+.karat {
+    @apply bg-primary  rounded-2xl border-b-2 border-b-accent hover:-translate-y-2 transition hover:shadow-accent/40 shadow-md px-7 py-5 flex flex-col justify-start space-y-5
+}
+
+/* ---------- media ---------- */
+
+.media{
+    @apply rounded-full border border-1  border-accent p-2 text-accent cursor-pointer hover:shadow hover:shadow-lg hover:shadow-accent/70
+}
+
+
