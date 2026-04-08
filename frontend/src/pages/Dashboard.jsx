@@ -6,7 +6,33 @@ import DashboardData from '../components/DashboardData';
 import { useContext } from 'react';
 import { CurrencyContext } from '../context/CurrencyContext';
 
+import asset1 from "../assets/images/asset1.jpg"
+import asset2 from "../assets/images/asset2.jpg"
+import AssetData from '../components/AssetData';
+import { Link } from 'react-router-dom';
 function Dashboard() {
+        const assets =[
+        {id:1, pic : asset1 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
+        {id:2, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
+        {id:3, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
+        {id:4, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
+        {id:5, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
+        {id:6, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
+        {id:7, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
+    ]
+
+
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6;
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+    const currentAssets = assets.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(assets.length / itemsPerPage);
+    console.log(currentAssets);
 
 
     const [user, setUser] = useState(null);
@@ -23,39 +49,37 @@ function Dashboard() {
     const { currency } = useContext(CurrencyContext);
     const letters = user?.name?.slice(0, 2);
     const data =[
-        { icon :<i class="fa-solid fa-basket-shopping"></i> , bg:"section" , color:"accent" ,shadow:"accent",  title:"Total Assets" , number :27},
-        { icon :<i class="fa-solid fa-chart-line"></i> , bg:"section" , color:"accent" ,shadow:"accent",  title:"Total Profit" , number: currency === "JOD" ? "JOD 9,880" : "USD 9,880"},
-        { icon :<i class="fa-solid fa-coins"></i> , bg:"section" , color:"accent" ,shadow:"accent",  title:"Total Weight" , number :'167 g'}
+        { icon :<i className="fa-solid fa-basket-shopping"></i> , bg:"section" , color:"accent" ,shadow:"accent",  title:"Total Assets" , number :27},
+        { icon :<i className="fa-solid fa-chart-line"></i> , bg:"section" , color:"accent" ,shadow:"accent",  title:"Total Profit" , number: currency === "JOD" ? "JOD 9,880" : "USD 9,880"},
+        { icon :<i className="fa-solid fa-coins"></i> , bg:"section" , color:"accent" ,shadow:"accent",  title:"Total Weight" , number :'167 g'}
     ];
 
+    const [prices, setPrices] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-
-     const [prices, setPrices] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/gold/live")
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setPrices(data.data);
-        }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
+    useEffect(() => {
+        fetch("http://127.0.0.1:8000/api/gold/live")
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+            setPrices(data.data);
+            }
+            setLoading(false);
+        })
+        .catch(err => {
+            console.error(err);
+            setLoading(false);
+        });
+    }, []);
 
   // loading state
-  if (loading) {
-    return <p className="text-center text-white">Loading...</p>;
-  }
+    if (loading) {
+        return <p className="text-center text-white">Loading...</p>;
+    }
 
-  if (!prices) {
-    return <p className="text-center text-red-500">Failed to load prices</p>;
-  }
+    if (!prices) {
+        return <p className="text-center text-red-500">Failed to load prices</p>;
+    }
 
 
     const karats = [
@@ -63,6 +87,9 @@ function Dashboard() {
     { karat: 21, price: currency === "JOD" ? prices["21k_price_jod"] : prices["21k_price_usd"] },
     { karat: 18, price: currency === "JOD" ? prices["18k_price_jod"] : prices["18k_price_usd"] },
 ];
+
+
+
 
 
     return (
@@ -95,7 +122,7 @@ function Dashboard() {
             <div className="app-container">
                 <div className='p-6   bg-section w-full rounded-xl border border-secondary/50'>
                     <div className='flex justify-between items-center h-7'>
-                    <span className='text-white font-bold text-2xl flex gap-2'><i class="text-accent text-3xl fa-solid fa-chart-column"> </i>
+                    <span className='text-white font-bold text-2xl flex gap-2'><i className="text-accent text-3xl fa-solid fa-chart-column"> </i>
                         Current Gold Prices</span>
 
                     <span className='text-secondary/90 font-light'>Per gram</span>
@@ -119,12 +146,57 @@ function Dashboard() {
                 <div className='flex justify-between items-center h-7 mt-10 '>
                     <span className='text-white text-xl font-bold hidden md:block'>Your Gold Assets</span>
                     <button className='cursor-pointer bg-accent hover:bg-accent/80 transition px-4 w-full md:w-70 font-bold py-2 rounded-lg text-section'>
-                        + Add You Assets
+                        <Link to='/add-asset'> + Add You Assets </Link>
                     </button>
                 </div>
 
-                <div className='grid grid-cols-1 md:grid-cols-3 gap-5 mt-15'>
-                    <div></div>
+
+
+                <div className='grid grid-cols-1 md:grid-cols-3 justify-center items-center gap-5 mt-15'>
+
+
+                    {currentAssets.map((asset)=>(
+                        <AssetData key={asset.id} category={asset.category} currency={currency}
+                        pic={asset.pic} karat={asset.karat} weight={asset.weight} CurrentValue={asset.CurrentValue}
+                        profitOrLose={asset.profitOrLose} PurchasePrice={asset.PurchasePrice}/>
+                    ))}
+
+                </div>
+                <div className="flex justify-center items-center gap-3 mt-10">
+
+                {/* Previous */}
+                <button
+                    onClick={() => setCurrentPage(prev => prev - 1)}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 bg-primary text-white rounded disabled:opacity-50"
+                >
+                    ←
+                </button>
+
+                {/* Page Numbers */}
+                {[...Array(totalPages)].map((_, index) => (
+                    <button
+                    key={index}
+                    onClick={() => setCurrentPage(index + 1)}
+                    className={`px-3 py-1 rounded ${
+                        currentPage === index + 1
+                        ? "bg-accent text-section"
+                        : "bg-primary text-white"
+                    }`}
+                    >
+                    {index + 1}
+                    </button>
+                ))}
+
+                {/* Next */}
+                <button
+                    onClick={() => setCurrentPage(prev => prev + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1 bg-primary text-white rounded disabled:opacity-50"
+                >
+                    →
+                </button>
+
                 </div>
             </div>
 
