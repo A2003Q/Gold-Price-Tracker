@@ -37,6 +37,10 @@ function BarsSection() {
     return <p className="text-center text-red-500">Failed to load prices</p>;
   }
 
+  const pricePerGram =
+  currency === "JOD"
+    ? prices["24k_price_jod"]
+    : prices["24k_price_usd"];
 
   return (
     <>
@@ -85,11 +89,11 @@ function BarsSection() {
                 <hr className='mt-2 text-secondary' />
                 <div className='flex justify-between md:justify-evenly mt-9'>
                   <span className='text-secondary font-light'>Price</span>
-                  <span className='text-accent font-bold'> <span>{currency === "JOD" ? `JOD` : `USD`} </span> {prices["24k_price_usd"] * gram}</span>
+                  <span className='text-accent font-bold'>{currency} {(pricePerGram * gram).toFixed(2)}</span>
                 </div>
                 <hr className='mt-2 text-secondary' />
               </div>
-              
+
             </div>
 
           </div>
