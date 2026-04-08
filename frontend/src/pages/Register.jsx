@@ -3,9 +3,14 @@ import Form from '../components/Form'
 import Input, { Select } from '../components/Input'
 import Logo from '../components/Logo'
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2'
+import { useNavigate } from 'react-router-dom';
+import miniStar from '../assets/images/smallStar.svg'
+
+
 
 function Register() {
-    
+    const navigate = useNavigate();
     const [formData , setFormData] = useState({
         name:"",
         email: "",
@@ -72,13 +77,31 @@ function Register() {
         const data = await response.json();
 
         if (!response.ok) {
-            console.log(data);
-            alert("Error occurred");
-            return;
+        if (data.errors) {
+            const backendErrors = {};
+
+            for (let key in data.errors) {
+                backendErrors[key] = data.errors[key][0]; 
+            }
+
+            setErrors(backendErrors);
         }
 
+        return;
+    }
+
         console.log("Success:", data);
-        alert("Registered successfully");
+        Swal.fire({
+            icon: 'success',
+            title: 'Account Created 🎉',
+            text: 'Redirecting to login...',
+            timer: 2000,
+            showConfirmButton: false
+        });
+
+        setTimeout(() => {
+            navigate("/login");
+        }, 2000);
 
     } catch (error) {
         console.error("Error:", error);
@@ -106,6 +129,16 @@ function Register() {
                 
                 <p className='text-secondary font-light'>Already have an account? 
                     <Link className='text-accent font-bold' to="/login">Login</Link></p>
+
+
+
+                     {/* shape  */}
+          <img src={miniStar}  className='hidden md:block absolute bottom-0 right-30 animate-ping'
+          width={150} height={150} alt="" />
+          <img src={miniStar}  className='hidden md:block absolute top-20 left-20 animate-ping'
+          width={150} height={150} alt="" />
+          <img src={miniStar}  className='hidden md:block absolute top-90 left-20 animate-ping'
+          width={150} height={150} alt="" />
                     
             </section>
         </>

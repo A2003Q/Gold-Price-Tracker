@@ -1,15 +1,44 @@
 import Currency from './Currency'
 import miniStar from '../assets/images/smallStar.svg'
 import KaratPrice from './KaratPrice'
+import { useEffect, useState } from 'react';
+
 
 
 function GoldPriceSection() {
   
+ const [prices, setPrices] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/gold/live")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setPrices(data.data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  // loading state
+  if (loading) {
+    return <p className="text-center text-white">Loading...</p>;
+  }
+
+  if (!prices) {
+    return <p className="text-center text-red-500">Failed to load prices</p>;
+  }
+
   const karats = [
-  { karat: 24, price: 100.15 },
-  { karat: 21, price: 89.98 },
-  { karat: 18, price: 83.05 },
-]
+    { karat: 24, price: prices["24k_price_usd"] },
+    { karat: 21, price: prices["21k_price_usd"] },
+    { karat: 18, price: prices["18k_price_usd"] },
+  ];
 
   return (
     <>
@@ -28,7 +57,7 @@ function GoldPriceSection() {
               <img src={miniStar}  className='hidden md:block absolute top-5 right-90 animate-ping'
                 width={300} height={300} alt="" />
                     
-          <Currency/>
+          <Currency bgColor="primary" />
         </div>
       </div>
 

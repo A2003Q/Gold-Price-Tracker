@@ -1,12 +1,42 @@
 import bars from '../assets/images/bars.png';
 import miniStar from '../assets/images/smallStar.svg';
-import  { useContext, useState } from 'react'
+import  { useContext, useState , useEffect } from 'react'
 import { CurrencyContext } from '../context/CurrencyContext'
+
 
 function BarsSection() {
       const {currency} = useContext(CurrencyContext);
 
       const [gram , setGram]=useState(1);
+
+        const [prices, setPrices] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+
+    useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/gold/live")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setPrices(data.data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  // loading state
+  if (loading) {
+    return <p className="text-center text-white">Loading...</p>;
+  }
+
+  if (!prices) {
+    return <p className="text-center text-red-500">Failed to load prices</p>;
+  }
+
 
   return (
     <>
@@ -55,7 +85,7 @@ function BarsSection() {
                 <hr className='mt-2 text-secondary' />
                 <div className='flex justify-between md:justify-evenly mt-9'>
                   <span className='text-secondary font-light'>Price</span>
-                  <span className='text-accent font-bold'> <span>{currency === "JOD" ? `JOD` : `USD`} </span> 556.65</span>
+                  <span className='text-accent font-bold'> <span>{currency === "JOD" ? `JOD` : `USD`} </span> {prices["24k_price_usd"] * gram}</span>
                 </div>
                 <hr className='mt-2 text-secondary' />
               </div>

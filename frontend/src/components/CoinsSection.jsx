@@ -1,13 +1,42 @@
 import EnglishLira from '../assets/images/EnglishLira.png';
 import RashadiLira from '../assets/images/RashadiLira.png'
 import miniStar from '../assets/images/smallStar.svg'
-
 import Coin from './Coin';
+import { useEffect, useState } from 'react';
 
 function CoinsSection() {
+
+  const [prices, setPrices] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+
+    useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/gold/live")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setPrices(data.data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  // loading state
+  if (loading) {
+    return <p className="text-center text-white">Loading...</p>;
+  }
+
+  if (!prices) {
+    return <p className="text-center text-red-500">Failed to load prices</p>;
+  }
+
   const coins =[
-    {title : "Rashadi Lira" , pic :EnglishLira , karat :"21" , weight :"7.2" , currentPrice :"306.36"},
-    {title : "English Lira" , pic :RashadiLira , karat :"21" , weight :"8" , currentPrice :"356.65"},
+    {title : "Rashadi Lira" , pic :RashadiLira , karat :"21" , weight :"7.2" , currentPrice :prices["21k_price_usd"] *7.2},
+    {title : "English Lira" , pic :EnglishLira , karat :"21" , weight :"8" , currentPrice :prices["21k_price_usd"]*8},
   ];
 
 
