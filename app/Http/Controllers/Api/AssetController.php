@@ -57,35 +57,44 @@ class AssetController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'type' => 'required|in:jewelry,bar,coin',
-            'karat' => 'nullable|string',
-            'category' => 'nullable|string',
-            'weight' => 'required|numeric',
-            'purchase_price' => 'required|numeric',
-            'purchase_date' => 'nullable|date',
-            'image' => 'nullable|string',
-            'currency' => 'nullable|string',
-        ]);
+    $validator = Validator::make($request->all(), [
+    'type' => 'required|in:jewelry,bar,coin',
+    'karat' => 'nullable|string',
+    'category' => 'nullable|string',
+    'weight' => 'nullable|numeric',
+    'purchase_price' => 'required|numeric',
+    'purchase_date' => 'nullable|date',
+    'image' => 'nullable|string',
+    'currency' => 'nullable|string',
+]);
+    
+if ($validator->fails()) {
+    return response()->json([
+        'message' => 'Validation errors',
+        'errors' => $validator->errors(),
+    ], 422);
+}
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation errors',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+if (in_array($request->type, ['jewelry', 'bar']) && !$request->filled('weight')) {
+    return response()->json([
+        'message' => 'Validation errors',
+        'errors' => [
+            'weight' => ['Weight is required for jewelry and bar assets.']
+        ]
+    ], 422);
+}
 
-        $asset = Asset::create([
-            'user_id' => $request->user()->id,
-            'type' => $request->type,
-            'karat' => $request->karat,
-            'category' => $request->category,
-            'weight' => $request->weight,
-            'purchase_price' => $request->purchase_price,
-            'purchase_date' => $request->purchase_date,
-            'image' => $request->image,
-            'currency' => $request->currency ?? 'JOD',
-        ]);
+      $asset = Asset::create([
+    'user_id' => $request->user()->id,
+    'type' => $request->type,
+    'karat' => $request->karat,
+    'category' => $request->category,
+    'weight' => $request->type === 'coin' ? null : $request->weight,
+    'purchase_price' => $request->purchase_price,
+    'purchase_date' => $request->purchase_date,
+    'image' => $request->image,
+    'currency' => $request->currency ?? 'JOD',
+]);
 
         return response()->json([
             'message' => 'Asset created successfully',
@@ -118,20 +127,60 @@ class AssetController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $asset = Asset::findOrFail($id);
+{
+    $asset = Asset::findOrFail($id);
 
-        if ($asset->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
-        $asset->update($request->all());
-
-        return response()->json([
-            'message' => 'Asset updated successfully',
-            'asset' => $asset
-        ]);
+    if ($asset->user_id !== $request->user()->id) {
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
+
+    $validator = Validator::make($request->all(), [
+        'type' => 'sometimes|in:jewelry,bar,coin',
+        'karat' => 'nullable|string',
+        'category' => 'nullable|string',
+        'weight' => 'nullable|numeric',
+        'purchase_price' => 'sometimes|numeric',
+        'purchase_date' => 'nullable|date',
+        'image' => 'nullable|string',
+        'currency' => 'nullable|string',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'message' => 'Validation errors',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
+    $type = $request->type ?? $asset->type;
+
+    if (in_array($type, ['jewelry', 'bar']) && $request->has('type') && !$request->filled('weight') && !$asset->weight) {
+        return response()->json([
+            'message' => 'Validation errors',
+            'errors' => [
+                'weight' => ['Weight is required for jewelry and bar assets.']
+            ]
+        ], 422);
+    }
+
+    $asset->update([
+        'type' => $type,
+        'karat' => $request->karat ?? $asset->karat,
+        'category' => $request->category ?? $asset->category,
+        'weight' => $type === 'coin'
+            ? null
+            : ($request->weight ?? $asset->weight),
+        'purchase_price' => $request->purchase_price ?? $asset->purchase_price,
+        'purchase_date' => $request->purchase_date ?? $asset->purchase_date,
+        'image' => $request->image ?? $asset->image,
+        'currency' => $request->currency ?? $asset->currency,
+    ]);
+
+    return response()->json([
+        'message' => 'Asset updated successfully',
+        'asset' => $asset
+    ]);
+}
 
     public function destroy(Request $request, $id)
     {
