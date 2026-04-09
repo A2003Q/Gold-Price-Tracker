@@ -16,14 +16,15 @@ public function calculateAssetValue(array $goldPrices, $asset)
     };
 
     if ($asset->type === 'coin') {
-        $weight = match (strtolower($asset->category)) {
-            'rashadi' => 7.2,
-            'english' => 8,
-            default => 0,
-        };
-    } else {
-        $weight = (float) $asset->weight;
-    }
+    $category = strtolower($asset->category);
+    $weight = match (true) {
+        str_contains($category, 'rashadi') => 7.2,
+        str_contains($category, 'english') => 8,
+        default => 0,
+    };
+} else {
+    $weight = (float) $asset->weight;
+}
 
     $currentValue = $pricePerGram * $weight;
     $profitLoss = $currentValue - $asset->purchase_price;

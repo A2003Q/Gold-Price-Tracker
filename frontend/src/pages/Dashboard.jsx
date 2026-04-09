@@ -10,16 +10,48 @@ import asset1 from "../assets/images/asset1.jpg"
 import asset2 from "../assets/images/asset2.jpg"
 import AssetData from '../components/AssetData';
 import { Link } from 'react-router-dom';
+
+
 function Dashboard() {
-        const assets =[
-        {id:1, pic : asset1 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
-        {id:2, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
-        {id:3, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
-        {id:4, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
-        {id:5, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
-        {id:6, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
-        {id:7, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
-    ]
+    //     const assets =[
+    //     {id:1, pic : asset1 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
+    //     {id:2, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
+    //     {id:3, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
+    //     {id:4, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
+    //     {id:5, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
+    //     {id:6, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
+    //     {id:7, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
+    // ]
+
+    const handleAssetDelete = (id) => {
+    setAssets(prevAssets => prevAssets.filter(asset => asset.id !== id));
+};
+    const [assets, setAssets] = useState([]);
+    const [loadingAssets, setLoadingAssets] = useState(true);
+
+    useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/assets", {
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        setAssets(data.assets);
+        setLoadingAssets(false);
+        console.log(data);
+    })
+    .catch(err => {
+        console.error(err);
+        setLoadingAssets(false);
+    });
+}, []);
+
+
+// if (loadingAssets) {
+//     return <p className="text-center text-white">Loading assets...</p>;
+// }
 
 
     // Pagination
@@ -155,11 +187,23 @@ function Dashboard() {
                 <div className='grid grid-cols-1 md:grid-cols-3 justify-center items-center gap-5 mt-15'>
 
 
-                    {currentAssets.map((asset)=>(
-                        <AssetData key={asset.id} category={asset.category} currency={currency}
-                        pic={asset.pic} karat={asset.karat} weight={asset.weight} CurrentValue={asset.CurrentValue}
-                        profitOrLose={asset.profitOrLose} PurchasePrice={asset.PurchasePrice}/>
-                    ))}
+                    {currentAssets.map((asset) => (
+
+                    <AssetData
+    key={asset.id}
+    id={asset.id}
+    category={asset.category}
+    currency={currency}
+    pic={asset.image}
+    karat={asset.karat}
+    weight={asset.weight}
+    CurrentValue={currency === "JOD" ? asset.calculation.current_value_jod : asset.calculation.current_value_usd}
+    profitOrLose={currency === "JOD" ? asset.calculation.profit_loss_jod : asset.calculation.profit_loss_usd}
+    PurchasePrice={asset.purchase_price}
+    onDelete={handleAssetDelete}
+/>
+
+                ))}
 
                 </div>
                 <div className="flex justify-center items-center gap-3 mt-10">
