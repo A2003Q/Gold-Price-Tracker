@@ -11,6 +11,8 @@ import miniStar from '../assets/images/smallStar.svg'
 
 function Register() {
     const navigate = useNavigate();
+
+    
     const [formData , setFormData] = useState({
         name:"",
         email: "",
@@ -23,9 +25,9 @@ function Register() {
         name :"",
         email: "",
         phone: "",
-        password: "",        
+        password: "",
         gender: ""
-        
+
     });
 
     const handleChange = (e) => {
@@ -81,7 +83,7 @@ function Register() {
             const backendErrors = {};
 
             for (let key in data.errors) {
-                backendErrors[key] = data.errors[key][0]; 
+                backendErrors[key] = data.errors[key][0];
             }
 
             setErrors(backendErrors);
@@ -124,10 +126,10 @@ function Register() {
                     <Select lable={"Gender"} name="gender"
                         value={formData.gender}
                         onChange={handleChange}
-                        error={errors.gender}/>  
-                </Form>  
-                
-                <p className='text-secondary font-light'>Already have an account? 
+                        error={errors.gender}/>
+                </Form>
+
+                <p className='text-secondary font-light'>Already have an account?
                     <Link className='text-accent font-bold' to="/login">Login</Link></p>
 
 
@@ -139,7 +141,7 @@ function Register() {
           width={150} height={150} alt="" />
           <img src={miniStar}  className='hidden md:block absolute top-90 left-20 animate-ping'
           width={150} height={150} alt="" />
-                    
+
             </section>
         </>
     )
