@@ -1,6 +1,5 @@
 import gold  from '../assets/images/gold.png'
 import miniStar from '../assets/images/smallStar.svg'
-import Logo from './Logo'
 import MainFeatures from './MainFeatures'
 function HeroSection() {
   return (

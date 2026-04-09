@@ -64,10 +64,10 @@ class AssetController extends Controller
     'weight' => 'nullable|numeric',
     'purchase_price' => 'required|numeric',
     'purchase_date' => 'nullable|date',
-    'image' => 'nullable|string',
+    'image' => 'nullable',
     'currency' => 'nullable|string',
 ]);
-    
+
 if ($validator->fails()) {
     return response()->json([
         'message' => 'Validation errors',
@@ -84,15 +84,20 @@ if (in_array($request->type, ['jewelry', 'bar']) && !$request->filled('weight'))
     ], 422);
 }
 
-      $asset = Asset::create([
+    $imagePath = null;
+
+if ($request->hasFile('image')) {
+    $imagePath = $request->file('image')->store('assets', 'public');
+}
+    $asset = Asset::create([
     'user_id' => $request->user()->id,
     'type' => $request->type,
     'karat' => $request->karat,
     'category' => $request->category,
-    'weight' => $request->type === 'coin' ? null : $request->weight,
+    'weight' => $request->weight ?? null,
     'purchase_price' => $request->purchase_price,
     'purchase_date' => $request->purchase_date,
-    'image' => $request->image,
+    'image' => $imagePath,
     'currency' => $request->currency ?? 'JOD',
 ]);
 
@@ -167,9 +172,7 @@ if (in_array($request->type, ['jewelry', 'bar']) && !$request->filled('weight'))
         'type' => $type,
         'karat' => $request->karat ?? $asset->karat,
         'category' => $request->category ?? $asset->category,
-        'weight' => $type === 'coin'
-            ? null
-            : ($request->weight ?? $asset->weight),
+        'weight' => $request->weight ?? $asset->weight,
         'purchase_price' => $request->purchase_price ?? $asset->purchase_price,
         'purchase_date' => $request->purchase_date ?? $asset->purchase_date,
         'image' => $request->image ?? $asset->image,
