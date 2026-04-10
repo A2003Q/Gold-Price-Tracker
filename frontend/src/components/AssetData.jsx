@@ -78,7 +78,7 @@ function AssetData({ id, currency, pic, category, karat, weight, PurchasePrice, 
             <div className='p-5'>
                 <div className='flex items-center justify-between '>
                     <span className='text-white font-bold text-sm capitalize'>{category}</span>
-                    <span className='bg-accent/30 text-accent px-3 py-1 rounded-2xl'>{karat}</span>
+                    <span className='bg-accent/30 text-accent px-3 py-1 rounded-2xl'>{karat}K</span>
                 </div>
                 <div className='text-secondary font-bold my-4'>
                     Weight : {weight} g

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import gold  from '../assets/images/gold.png'
 import miniStar from '../assets/images/smallStar.svg'
 import MainFeatures from './MainFeatures'
@@ -24,15 +25,15 @@ function HeroSection() {
             Manage your gold assets intelligently. Track live gold prices, calculate profits in real-time, and make informed investment decisions with our premium platform.
           </p>
 
-          <button className='btn-primary '> 
-            <span>Start Tracking Your Gold</span> <i class="text-2xl fa-solid fa-arrow-right-long"></i>
+          <button className='btn-primary '>
+            <Link to='/login'><span>Start Tracking Your Gold</span></Link> <i class="text-2xl fa-solid fa-arrow-right-long"></i>
           </button>
 
           <MainFeatures/>
         </div>
 
         {/* right image  */}
-        
+
         <img  className=' drop-shadow-accent/80 drop-shadow-2xl '
         src={gold} alt="gold" />
 

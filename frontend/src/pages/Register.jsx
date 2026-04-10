@@ -12,7 +12,7 @@ import miniStar from '../assets/images/smallStar.svg'
 function Register() {
     const navigate = useNavigate();
 
-    
+
     const [formData , setFormData] = useState({
         name:"",
         email: "",

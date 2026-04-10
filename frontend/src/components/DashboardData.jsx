@@ -5,6 +5,7 @@ import React from 'react'
         const bgClasses = {
             section: "bg-section",
             profit: "bg-profit",
+            lose : "bg-lose"
         };
 
         const textClasses = {
@@ -46,7 +47,17 @@ import React from 'react'
                 <span className='text-white font-light'>{title}</span>
             </div>
 
-            <span className='font-bold text-4xl text-white px-8'>{number}</span>
+            <span
+                className={`font-bold text-4xl px-8 ${
+                    title === "Total Profit"
+                    ? number.toString().includes("-")
+                        ? "text-lose"
+                        : "text-profit"
+                    : "text-white"
+                }`}
+                >
+                {number}
+                </span>
             </div>
         )
     }

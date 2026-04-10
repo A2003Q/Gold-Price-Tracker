@@ -10,7 +10,7 @@ const links =[
 function Navbar() {
 
   const [OpenMenuMobile , setOpenMenuMobile]=useState(false);
-  
+
   return (
     <>
     <nav className='bg-primary/80 backdrop-blur-sm shadow-sm fixed h-16 w-full z-50'>
@@ -27,15 +27,15 @@ function Navbar() {
             ))}
           </div>
 
-          <a href="/register" className='hidden md:block nav-btn '>Get Started</a>
+          <a href="/login" className='hidden md:block nav-btn '>Get Started</a>
 
           {/* mobile menu btn  */}
-          <button onClick={()=>setOpenMenuMobile((prev)=>!prev)} 
+          <button onClick={()=>setOpenMenuMobile((prev)=>!prev)}
           className='md:hidden text-2xl p-2 rounded-md text-white hover:text-accent transition  cursor-pointer focus:outline-none'>
             <i class="fa-solid fa-bars"></i>
           </button>
 
-          
+
         </div>
           {/* Mobile Menu  */}
           {OpenMenuMobile && (
@@ -44,9 +44,9 @@ function Navbar() {
               <a  key={link.name} className='mobile-nav-item'
                 href={link.href}>{link.name}</a>
             ))}
-            <a href="" className='mobile-nav-btn  '>Get Started</a>
+            <a href="/login" className='mobile-nav-btn  '>Get Started</a>
 
-          
+
             </div>
           )}
     </nav>

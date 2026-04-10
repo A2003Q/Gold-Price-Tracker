@@ -13,15 +13,7 @@ import { Link } from 'react-router-dom';
 
 
 function Dashboard() {
-    //     const assets =[
-    //     {id:1, pic : asset1 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
-    //     {id:2, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
-    //     {id:3, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
-    //     {id:4, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
-    //     {id:5, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
-    //     {id:6, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
-    //     {id:7, pic : asset2 , category :"Ring" , karat : 24 , weight :21 , PurchasePrice : 900 , CurrentValue :1200 , profitOrLose :300},
-    // ]
+
 
     const handleAssetDelete = (id) => {
     setAssets(prevAssets => prevAssets.filter(asset => asset.id !== id));
@@ -47,11 +39,25 @@ function Dashboard() {
         setLoadingAssets(false);
     });
 }, []);
+    const { currency } = useContext(CurrencyContext);
 
+    // ✅ Total Assets
+    const totalAssets = assets.length;
 
-// if (loadingAssets) {
-//     return <p className="text-center text-white">Loading assets...</p>;
-// }
+    // ✅ Total Weight
+    const totalWeight = assets.reduce((sum, asset) => {
+        return sum + (parseFloat(asset.weight) || 0);
+    }, 0);
+
+    // ✅ Total Profit
+    const totalProfit = assets.reduce((sum, asset) => {
+        if (currency === "JOD") {
+            return sum + (asset.calculation?.profit_loss_jod || 0);
+        } else {
+            return sum + (asset.calculation?.profit_loss_usd || 0);
+        }
+    }, 0);
+
 
 
     // Pagination
@@ -78,13 +84,34 @@ function Dashboard() {
         }
     }, []);
 
-    const { currency } = useContext(CurrencyContext);
+
     const letters = user?.name?.slice(0, 2);
-    const data =[
-        { icon :<i className="fa-solid fa-basket-shopping"></i> , bg:"section" , color:"accent" ,shadow:"accent",  title:"Total Assets" , number :27},
-        { icon :<i className="fa-solid fa-chart-line"></i> , bg:"section" , color:"accent" ,shadow:"accent",  title:"Total Profit" , number: currency === "JOD" ? "JOD 9,880" : "USD 9,880"},
-        { icon :<i className="fa-solid fa-coins"></i> , bg:"section" , color:"accent" ,shadow:"accent",  title:"Total Weight" , number :'167 g'}
-    ];
+   const data = [
+    {
+        icon: <i className="fa-solid fa-basket-shopping"></i>,
+        bg: "section",
+        color: "accent",
+        shadow: "accent",
+        title: "Total Assets",
+        number: totalAssets
+    },
+    {
+        icon: <i className="fa-solid fa-chart-line"></i>,
+        bg: "section",
+        color: "accent",
+        shadow: "accent",
+        title: "Total Profit",
+        number: `${currency} ${totalProfit.toFixed(2)}`
+    },
+    {
+        icon: <i className="fa-solid fa-coins"></i>,
+        bg: "section",
+        color: "accent",
+        shadow: "accent",
+        title: "Total Weight",
+        number: `${totalWeight.toFixed(2)} g`
+    }
+];
 
     const [prices, setPrices] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -104,10 +131,9 @@ function Dashboard() {
         });
     }, []);
 
-  // loading state
-    if (loading) {
-        return <p className="text-center text-white">Loading...</p>;
-    }
+ if (loading || loadingAssets) {
+    return <p className="text-center text-white">Loading...</p>;
+}
 
     if (!prices) {
         return <p className="text-center text-red-500">Failed to load prices</p>;
@@ -123,7 +149,9 @@ function Dashboard() {
 
 
 
-
+// if (loading || loadingAssets) {
+//     return <p className="text-center text-white">Loading...</p>;
+// }
     return (
 
 
@@ -190,18 +218,24 @@ function Dashboard() {
                     {currentAssets.map((asset) => (
 
                     <AssetData
-    key={asset.id}
-    id={asset.id}
-    category={asset.category}
-    currency={currency}
-    pic={asset.image}
-    karat={asset.karat}
-    weight={asset.weight}
-    CurrentValue={currency === "JOD" ? asset.calculation.current_value_jod : asset.calculation.current_value_usd}
-    profitOrLose={currency === "JOD" ? asset.calculation.profit_loss_jod : asset.calculation.profit_loss_usd}
-    PurchasePrice={asset.purchase_price}
-    onDelete={handleAssetDelete}
-/>
+                        key={asset.id}
+                        id={asset.id}
+                        category={asset.category}
+                        currency={currency}
+                        pic={asset.image}
+                        karat={asset.karat}
+                        weight={asset.weight}
+                        CurrentValue={currency === "JOD" ? asset.calculation.current_value_jod : asset.calculation.current_value_usd}
+                        profitOrLose={currency === "JOD" ? asset.calculation.profit_loss_jod : asset.calculation.profit_loss_usd}
+                        PurchasePrice={
+                            currency === "JOD"
+                                ? asset.purchase_price
+                                : (asset.currency === "JOD"
+                                    ? (asset.purchase_price / 0.71).toFixed(2)
+                                    : asset.purchase_price
+                                )
+                        }                        onDelete={handleAssetDelete}
+                    />
 
                 ))}
 
