@@ -5,6 +5,7 @@ import Coin from './Coin';
 import { useEffect, useState } from 'react';
 import { useContext } from 'react'
 import { CurrencyContext } from '../context/CurrencyContext'
+import Loading from './Loading';
 
 function CoinsSection() {
 
@@ -30,7 +31,7 @@ function CoinsSection() {
 
     // loading state
     if (loading) {
-        return <p className="text-center text-white">Loading...</p>;
+        return <Loading/>;
     }
 
     if (!prices) {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
 function AssetData({ id, currency, pic, category, karat, weight, PurchasePrice, CurrentValue, profitOrLose, onDelete }) {
     const [showMenu, setShowMenu] = useState(false);
@@ -8,6 +9,7 @@ function AssetData({ id, currency, pic, category, karat, weight, PurchasePrice, 
         : "/default.png";
 
     const isProfit = profitOrLose >= 0;
+    const navigate = useNavigate();
 
     const handleDelete = () => {
         Swal.fire({
@@ -49,7 +51,8 @@ function AssetData({ id, currency, pic, category, karat, weight, PurchasePrice, 
     };
 
     return (
-        <div className='hover:-translate-y-3 transition flex flex-col w-full md:w-80 border border-secondary/40 rounded-xl'>
+        <div className={` ${isProfit ? "hover:border-b-profit" : "hover:border-b-lose"}
+            hover:border hover:border-b-accent hover:border-b-8 hover:-translate-y-3 transition flex flex-col w-full md:w-80 border border-secondary/40 rounded-xl`}>
             <div className='pic relative'>
                 <img className='rounded-xl' src={imageUrl} alt="asset" />
                 <span
@@ -61,11 +64,11 @@ function AssetData({ id, currency, pic, category, karat, weight, PurchasePrice, 
                 {showMenu && (
                     <div className="absolute top-15 right-2 rounded-lg shadow-lg w-32 z-10">
                         <button
-                            className="block text-white w-full text-left bg-section px-4 py-2 hover:bg-section/50 transition text-sm"
-                            onClick={() => alert("Edit clicked")}
-                        >
-                            Edit
-                        </button>
+                                className="block text-white w-full text-left bg-section px-4 py-2 hover:bg-section/50 transition text-sm"
+                                onClick={() => navigate(`/edit-asset/${id}`)}
+                            >
+                                Edit
+                            </button>
                         <button
                             className="block text-white w-full text-left bg-section px-4 py-2 hover:bg-section/50 transition text-sm"
                             onClick={handleDelete}
@@ -96,7 +99,7 @@ function AssetData({ id, currency, pic, category, karat, weight, PurchasePrice, 
 
                 <div className='flex justify-between items-center mt-2'>
                     <span className='text-secondary text-sm font-bold'>Profit/Loss</span>
-                    <span className={`font-bold ${isProfit ? "text-green-500" : "text-red-500"}`}>
+                    <span className={`font-bold ${isProfit ? "text-profit" : "text-lose"}`}>
                         {isProfit ? "+" : ""} {currency} {profitOrLose}
                     </span>
                 </div>

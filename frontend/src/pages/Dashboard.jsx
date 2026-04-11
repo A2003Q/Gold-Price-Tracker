@@ -10,6 +10,7 @@ import asset1 from "../assets/images/asset1.jpg"
 import asset2 from "../assets/images/asset2.jpg"
 import AssetData from '../components/AssetData';
 import { Link } from 'react-router-dom';
+import Loading from '../components/Loading';
 
 
 function Dashboard() {
@@ -132,7 +133,8 @@ function Dashboard() {
     }, []);
 
  if (loading || loadingAssets) {
-    return <p className="text-center text-white">Loading...</p>;
+    // return <p className="text-center text-white">Loading...</p>;
+    return <Loading/>
 }
 
     if (!prices) {

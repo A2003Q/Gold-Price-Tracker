@@ -7,22 +7,25 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import AddAsset from './pages/AddAsset'
+import EditAsset from './pages/EditAsset'
 
 function App() {
 
-  return (
+    return (
     <>
-      <CurrencyProvider>
+    <CurrencyProvider>
         <Routes>
-          <Route path='/' element={<LangingPage/>}/>
-          <Route path='/register' element={<Register/>}/>
-          <Route path='/login' element={<Login/>}/>
-          <Route path='/dashboard' element={<Dashboard/>}/>
-          <Route path='/add-asset' element={<AddAsset/> }/>
+            <Route path='/' element={<LangingPage/>}/>
+            <Route path='/register' element={<Register/>}/>
+            <Route path='/login' element={<Login/>}/>
+            <Route path='/dashboard' element={<Dashboard/>}/>
+            <Route path='/add-asset' element={<AddAsset/> }/>
+            <Route path="/edit-asset/:id" element={<EditAsset />} />
+
         </Routes>
-      </CurrencyProvider>
+    </CurrencyProvider>
     </>
-  )
+    )
 }
 
 export default App

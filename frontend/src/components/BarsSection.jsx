@@ -2,6 +2,7 @@ import bars from '../assets/images/bars.png';
 import miniStar from '../assets/images/smallStar.svg';
 import  { useContext, useState , useEffect } from 'react'
 import { CurrencyContext } from '../context/CurrencyContext'
+import Loading from './Loading';
 
 
 function BarsSection() {
@@ -30,7 +31,7 @@ function BarsSection() {
 
   // loading state
   if (loading) {
-    return <p className="text-center text-white">Loading...</p>;
+    return <Loading/>;
   }
 
   if (!prices) {

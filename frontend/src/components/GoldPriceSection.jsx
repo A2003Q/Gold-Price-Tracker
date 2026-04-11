@@ -4,6 +4,7 @@ import KaratPrice from './KaratPrice'
 import {  useEffect, useState } from 'react';
 import { useContext } from 'react'
 import { CurrencyContext } from '../context/CurrencyContext'
+import Loading from './Loading';
 
 
 
@@ -29,7 +30,7 @@ function GoldPriceSection() {
 
   // loading state
   if (loading) {
-    return <p className="text-center text-white">Loading...</p>;
+    return <Loading/>;
   }
 
   if (!prices) {

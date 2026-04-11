@@ -4,10 +4,12 @@ import { Link } from 'react-router-dom';
 import { useRef } from 'react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-function AddAsset() {
+function EditAsset() {
 
     const navigate = useNavigate();
+    const { id } = useParams();
 
 
     //====== get user name ==========
@@ -94,12 +96,6 @@ function AddAsset() {
             karat: "24"
         }));
     }
-    if (dataForm.type === "coins") {
-        setDataForm(prev => ({
-            ...prev,
-            karat: "21"
-        }));
-    }
 
     // 🟡 coins
     if (dataForm.type === "coins") {
@@ -155,7 +151,9 @@ function AddAsset() {
     }
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/api/assets", {
+        formData.append("_method", "PUT");
+
+        const response = await fetch(`http://127.0.0.1:8000/api/assets/${id}`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -163,7 +161,6 @@ function AddAsset() {
             },
             body: formData
         });
-
         const data = await response.json();
 
         if (!response.ok) {
@@ -189,13 +186,13 @@ function AddAsset() {
         setPreview(null);
 
         Swal.fire({
-            icon: 'success',
-            title: 'Added Successfully 🎉',
-            text: 'Your asset has been added successfully',
-            confirmButtonColor: '#f2bb39'
-            }).then(() => {
-            navigate('/dashboard');
-        });
+        icon: 'success',
+        title: 'Updated Successfully 🎉',
+        text: 'Your asset has been updated successfully',
+        confirmButtonColor: '#f2bb39'
+    }).then(() => {
+        navigate('/dashboard');
+    });
 
     } catch (error) {
         console.error(error);
@@ -203,6 +200,41 @@ function AddAsset() {
 };
 
     //====== Api ==========
+
+
+
+    //====== Get Asset Info using id Api ==========
+    useEffect(() => {
+    fetch(`http://127.0.0.1:8000/api/assets/${id}`, {
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        const asset = data.asset;
+
+        setDataForm({
+            type: asset.type === "bar" ? "bars" : asset.type === "coin" ? "coins" : asset.type,
+            karat: asset.karat || "",
+            category: asset.category || "",
+            weight: asset.weight || "",
+            purchasePrice: asset.purchase_price || "",
+            purchaseDate: asset.purchase_date || "",
+            pic: ""
+        });
+
+        if (asset.image) {
+            setPreview(`http://127.0.0.1:8000/storage/${asset.image}`);
+        }
+    })
+    .catch(err => console.error(err));
+}, [id]);
+    //====== Get Asset Info using id Api ==========
+
+
+
 
 
 
@@ -243,7 +275,7 @@ function AddAsset() {
                         <div className='flex flex-col gap-3'>
                             <label className='text-white' htmlFor="karat">Karat</label>
                             <select value={dataForm.karat} onChange={handleChange}
-                            disabled={dataForm.type === "bars" } name="karat" id="karat" className='bg-section text-white outline-none hover:bg-section/80 focus:border focus:border-accent/60 transition px-4 py-2 rounded-2xl'>
+                            disabled={dataForm.type === "bars" || dataForm.type === "coins"} name="karat" id="karat" className='bg-section text-white outline-none hover:bg-section/80 focus:border focus:border-accent/60 transition px-4 py-2 rounded-2xl'>
                                 <option  value="">Select Karat</option>
                                 <option  value="24">24</option>
                                 <option  value="21">21</option>
@@ -337,35 +369,7 @@ function AddAsset() {
                     <div className='mt-5 grid grid-cols-1  justify-between items-center gap-5'>
                         <div className='flex flex-col gap-3'>
                             <label className='text-white' htmlFor="photo">Photo (optinal)</label>
-                            {/* <div className='border-2 border-dashed border-accent rounded-2xl flex flex-col justify-center items-center h-60'>
 
-                                {preview ? (
-                                    <img
-                                    src={preview}
-                                    alt="preview"
-                                    className="h-full w-full object-cover rounded-2xl"
-                                    />
-                                ) : (
-                                    <>
-                                    <span
-                                        onClick={() => fileRef.current.click()}
-                                        className='cursor-pointer flex justify-center items-center h-20 w-20 bg-accent/30 text-accent rounded-full text-4xl p-4'
-                                    >
-                                        <i className="fa-solid fa-arrow-up-from-bracket"></i>
-                                    </span>
-
-                                    <p className='text-secondary/80 font-light mt-2'>
-                                        <span className='text-accent font-bold'>Click to upload </span>
-                                        or drag and drop
-                                    </p>
-
-                                    <p className='text-secondary/80 text-sm mt-2'>
-                                        PNG, JPG up to 10MB
-                                    </p>
-                                    </>
-                                )}
-
-                            </div> */}
 
 
                             <div className='border-2 border-dashed border-accent rounded-2xl flex flex-col justify-center items-center h-60'>
@@ -398,7 +402,7 @@ function AddAsset() {
 
                     <div className='mt-20 flex flex-col md:flex-row justify-between items-center  gap-5'>
                         <button className='w-full md:w-lg cursor-pointer border border-accent/80 text-accent font-bold hover:text-accent/70 hover:border-accent/60  transition px-4 py-2 rounded-2xl'> <Link to="/dashboard">Cencel</Link> </button>
-                        <button type='submit' className='w-full md:w-lg cursor-pointer bg-accent text-section font-bold hover:bg-accent/70 transition  px-4 py-2 rounded-2xl'> Add Asset</button>
+                        <button type='submit' className='w-full md:w-lg cursor-pointer bg-accent text-section font-bold hover:bg-accent/70 transition  px-4 py-2 rounded-2xl'> Edit Asset</button>
 
                     </div>
                 </form>
@@ -410,4 +414,4 @@ function AddAsset() {
     )
 }
 
-export default AddAsset
+export default EditAsset
