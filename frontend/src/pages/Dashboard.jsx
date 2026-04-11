@@ -6,14 +6,13 @@ import DashboardData from '../components/DashboardData';
 import { useContext } from 'react';
 import { CurrencyContext } from '../context/CurrencyContext';
 
-import asset1 from "../assets/images/asset1.jpg"
-import asset2 from "../assets/images/asset2.jpg"
 import AssetData from '../components/AssetData';
 import { Link } from 'react-router-dom';
 import Loading from '../components/Loading';
 
 
 function Dashboard() {
+    const { currency } = useContext(CurrencyContext);
 
 
     const handleAssetDelete = (id) => {
@@ -21,6 +20,41 @@ function Dashboard() {
 };
     const [assets, setAssets] = useState([]);
     const [loadingAssets, setLoadingAssets] = useState(true);
+
+const [search, setSearch] = useState("");
+const [filterKarat, setFilterKarat] = useState("");
+const [filterType, setFilterType] = useState("");
+const [filterProfit, setFilterProfit] = useState("");
+
+const filteredAssets = assets.filter(asset => {
+
+    // 🔍 search
+    const matchSearch = asset.category?.toLowerCase().includes(search.toLowerCase());
+
+    // 🎯 karat
+    const matchKarat = filterKarat ? asset.karat == filterKarat : true;
+
+    // 🎯 type
+    const matchType = filterType ? asset.type === filterType : true;
+
+
+   // ✅ حل مشكلة profit
+    let profitValue =
+        currency === "JOD"
+            ? (asset.calculation?.profit_loss_jod ?? 0)
+            : (asset.calculation?.profit_loss_usd ?? 0);
+
+    let matchProfit = true;
+
+    if (filterProfit === "profit") {
+        matchProfit = profitValue > 0;
+    }
+
+    if (filterProfit === "loss") {
+        matchProfit = profitValue < 0;
+    }
+    return matchSearch && matchKarat && matchType && matchProfit;
+});
 
     useEffect(() => {
     fetch("http://127.0.0.1:8000/api/assets", {
@@ -40,7 +74,7 @@ function Dashboard() {
         setLoadingAssets(false);
     });
 }, []);
-    const { currency } = useContext(CurrencyContext);
+    // const { currency } = useContext(CurrencyContext);
 
     // ✅ Total Assets
     const totalAssets = assets.length;
@@ -68,9 +102,11 @@ function Dashboard() {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-    const currentAssets = assets.slice(indexOfFirstItem, indexOfLastItem);
+    // const currentAssets = assets.slice(indexOfFirstItem, indexOfLastItem);
+    const currentAssets = filteredAssets.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredAssets.length / itemsPerPage);
 
-    const totalPages = Math.ceil(assets.length / itemsPerPage);
+    // const totalPages = Math.ceil(assets.length / itemsPerPage);
     console.log(currentAssets);
 
 
@@ -150,10 +186,6 @@ function Dashboard() {
 
 
 
-
-// if (loading || loadingAssets) {
-//     return <p className="text-center text-white">Loading...</p>;
-// }
     return (
 
 
@@ -212,9 +244,67 @@ function Dashboard() {
                     </button>
                 </div>
 
+                <div className="app-container mt-15 flex flex-col  md:flex-row items-center justify-between gap-9">
 
+                {/* 🔍 Search */}
+                <input
+                    type="text"
+                    placeholder="Search by category..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="bg-section text-white px-4 py-2 rounded-xl outline-none w-full md:w-1/3"
+                />
 
-                <div className='grid grid-cols-1 md:grid-cols-3 justify-center items-center gap-5 mt-15'>
+                {/* 🎯 Karat */}
+                <select
+                    value={filterKarat}
+                    onChange={(e) => setFilterKarat(e.target.value)}
+                    className="bg-section text-white px-4 py-2 rounded-xl w-full md:w-60"
+                >
+                    <option value="">All Karats</option>
+                    <option value="24">24K</option>
+                    <option value="21">21K</option>
+                    <option value="18">18K</option>
+                </select>
+
+                {/* 🎯 Type */}
+                <select
+                    value={filterType}
+                    onChange={(e) => setFilterType(e.target.value)}
+                    className="bg-section text-white px-4 py-2 rounded-xl w-full md:w-60"
+                >
+                    <option value="">All Types</option>
+                    <option value="jewelry">Jewelry</option>
+                    <option value="bar">Bar</option>
+                    <option value="coin">Coin</option>
+                </select>
+
+                {/* 🎯 Profit / Loss */}
+                <select
+                    value={filterProfit}
+                    onChange={(e) => setFilterProfit(e.target.value)}
+                    className="bg-section text-white px-4 py-2 rounded-xl w-full md:w-60"
+                >
+                    <option value="">All</option>
+                    <option value="profit">Profit</option>
+                    <option value="loss">Loss</option>
+                </select>
+
+                <button
+                onClick={() => {
+                    setSearch("");
+                    setFilterKarat("");
+                    setFilterType("");
+                    setFilterProfit("");
+                }}
+                className="bg-accent hover:bg-accent/80 transition cursor-pointer text-section px-4 py-2 rounded-xl"
+            >
+                Reset
+            </button>
+
+            </div>
+
+                <div className='grid grid-cols-1 md:grid-cols-3 justify-evenly items-center gap-5 mt-15'>
 
 
                     {currentAssets.map((asset) => (

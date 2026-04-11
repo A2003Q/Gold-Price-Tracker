@@ -53,7 +53,7 @@ html {
 
   /* ---------- Navigation ---------- */
 .nav-item {
-    @apply text-white hover:text-accent px-3 py-2 text-sm font-light transition;
+    @apply  hover:text-accent px-3 py-2 text-sm font-light transition;
 }
 .nav-btn {
     @apply bg-accent text-primary px-6 py-2 rounded-3xl text-sm font-medium hover:bg-accent/90 hover:shadow-accent/30 outline-none shadow-lg transition;
@@ -71,12 +71,12 @@ html {
   .section-header {
       @apply text-white text-3xl md:text-4xl lg:text-5xl font-bold;
     }
-    
-    
+
+
     .section-description {
         @apply  max-w-2xl  text-secondary;
     }
-    
+
 /* ---------- features ---------- */
 .icons-container{
     @apply flex gap-4 items-center h-auto

@@ -254,7 +254,7 @@ function EditAsset() {
                     <Link to="/dashboard"> <i class="fa-solid fa-arrow-left-long"></i> <span>Back to Dashboard</span></Link>
                 </button>
             </div>
-            <p className='text-2xl font-bold text-white mt-8'>Add New Asset</p>
+            <p className='text-2xl font-bold text-white mt-8'>Edit Asset</p>
 
             <div className='p-9 mt-5 mb-15 border w-9xl border-secondary/30 rounded-xl shaow  shadow-white/50 shadow-xl'>
                 <form  onSubmit={handleSubmit}>

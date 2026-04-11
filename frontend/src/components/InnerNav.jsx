@@ -27,7 +27,7 @@ function InnerNav({name , letters}) {
             // 🔔 Alert
             Swal.fire({
                 icon: 'success',
-                title: 'Logged out 👋',
+                title: 'Logged out ',
                 timer: 1500,
                 showConfirmButton: false
             });

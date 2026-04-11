@@ -54,7 +54,7 @@ function AssetData({ id, currency, pic, category, karat, weight, PurchasePrice, 
         <div className={` ${isProfit ? "hover:border-b-profit" : "hover:border-b-lose"}
             hover:border hover:border-b-accent hover:border-b-8 hover:-translate-y-3 transition flex flex-col w-full md:w-80 border border-secondary/40 rounded-xl`}>
             <div className='pic relative'>
-                <img className='rounded-xl' src={imageUrl} alt="asset" />
+                <img className='rounded-xl w-full h-50' src={imageUrl} alt="asset"  />
                 <span
                     onClick={() => setShowMenu(!showMenu)}
                     className='text-white text-xl cursor-pointer absolute top-2 right-2 rounded-full w-10 h-10 bg-white/20 hover:bg-white/50 transition flex items-center justify-center'

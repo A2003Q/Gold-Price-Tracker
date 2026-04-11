@@ -1,57 +1,78 @@
-import  { useState } from 'react'
-import Logo from './Logo'
+    import  { useState } from 'react'
+    import Logo from './Logo'
 
-const links =[
-  {name : "Home" , href: "#home"},
-  {name : "Gold" , href: "#gold"},
-  {name : "Coin" , href: "#coin"},
-  {name : "Bar" , href: "#bar"},
-]
-function Navbar() {
+    const links =[
+    {name : "Home" , href: "#home"},
+    {name : "Gold" , href: "#gold"},
+    {name : "Coin" , href: "#coin"},
+    {name : "Bar" , href: "#bar"},
+    ]
+    function Navbar() {
 
-  const [OpenMenuMobile , setOpenMenuMobile]=useState(false);
-
-  return (
-    <>
-    <nav className='bg-primary/80 backdrop-blur-sm shadow-sm fixed h-16 w-full z-50'>
-        <div className='app-container flex  justify-between items-center h-16'>
-
-          {/* logo  */}
-          <Logo/>
-
-          {/* disktop links  */}
-          <div className='hidden md:flex items-center space-x-8'>
-            {links.map((link)=>(
-              <a  key={link.name} className='nav-item '
-                href={link.href}>{link.name}</a>
-            ))}
-          </div>
-
-          <a href="/login" className='hidden md:block nav-btn '>Get Started</a>
-
-          {/* mobile menu btn  */}
-          <button onClick={()=>setOpenMenuMobile((prev)=>!prev)}
-          className='md:hidden text-2xl p-2 rounded-md text-white hover:text-accent transition  cursor-pointer focus:outline-none'>
-            <i class="fa-solid fa-bars"></i>
-          </button>
+        const [activeLink, setActiveLink] = useState("Home");
+        const [OpenMenuMobile , setOpenMenuMobile]=useState(false);
 
 
-        </div>
-          {/* Mobile Menu  */}
-          {OpenMenuMobile && (
-            <div className='md:hidden w-full bg-white shadow-lg rounded-b-lg px-2 pt-2 space-y-1 pb-2'>
-              {links.map((link)=>(
-              <a  key={link.name} className='mobile-nav-item'
-                href={link.href}>{link.name}</a>
-            ))}
-            <a href="/login" className='mobile-nav-btn  '>Get Started</a>
+    return (
+        <>
+        <nav className='bg-primary/80 backdrop-blur-sm shadow-sm fixed h-16 w-full z-50'>
+            <div className='app-container flex  justify-between items-center h-16'>
+
+            {/* logo  */}
+            <Logo/>
+
+            {/* disktop links  */}
+            <div className='hidden md:flex items-center space-x-8'>
+                {links.map((link) => (
+                    <a
+                        key={link.name}
+                        href={link.href}
+                        onClick={() => setActiveLink(link.name)}
+                        className={`nav-item ${
+                        activeLink === link.name ? "text-accent" : "text-white"
+                        }`}
+                    >
+                        {link.name}
+                    </a>
+                    ))}
+            </div>
+
+            <a href="/login" className='hidden md:block nav-btn '>Get Started</a>
+
+            {/* mobile menu btn  */}
+            <button onClick={()=>setOpenMenuMobile((prev)=>!prev)}
+            className='md:hidden text-2xl p-2 rounded-md text-white hover:text-accent transition  cursor-pointer focus:outline-none'>
+                <i class="fa-solid fa-bars"></i>
+            </button>
 
 
             </div>
-          )}
-    </nav>
-    </>
-  )
-}
+            {/* Mobile Menu  */}
+            {OpenMenuMobile && (
+                <div className='md:hidden w-full bg-white shadow-lg rounded-b-lg px-2 pt-2 space-y-1 pb-2'>
+                {links.map((link) => (
+                    <a
+                        key={link.name}
+                        href={link.href}
+                        onClick={() => {
+                        setActiveLink(link.name);
+                        setOpenMenuMobile(false); // يسكر المينيو بعد الضغط 👌
+                        }}
+                        className={`mobile-nav-item ${
+                        activeLink === link.name ? "text-accent" : ""
+                        }`}
+                    >
+                        {link.name}
+                    </a>
+                    ))}
+                <a href="/login" className='mobile-nav-btn  '>Get Started</a>
 
-export default Navbar
+
+                </div>
+            )}
+        </nav>
+        </>
+    )
+    }
+
+    export default Navbar
